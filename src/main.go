@@ -19,6 +19,10 @@ type Author struct {
 	Lastname  string `json:"lastname"`
 }
 var books []Book
+func getBooks(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(books)
+}
 func getBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -74,10 +78,10 @@ func main() {
 	books = append(books, Book{ID: "1", Title: "Война и Мир", Author: &Author{Firstname: "Лев", Lastname: "Толстой"}})
 	books = append(books, Book{ID: "2", Title: "Преступление и наказание", Author: &Author{Firstname: "Фёдор", Lastname: "Достоевский"}})
 	r.HandleFunc("/", basicResponse).Methods("GET")
-	r.HandleFunc("/books", getBook).Methods("GET")
+	r.HandleFunc("/books/", getBooks).Methods("GET")
 	r.HandleFunc("/books/{id}", getBook).Methods("GET")
-	r.HandleFunc("/books", createBook).Methods("POST")
+	r.HandleFunc("/books/", createBook).Methods("POST")
 	r.HandleFunc("/books/{id}", updateBook).Methods("PUT")
 	r.HandleFunc("/books/{id}", deleteBook).Methods("DELETE")
-	log.Fatal(http.ListenAndServe("localhost:8181", r))
+	log.Fatal(http.ListenAndServe("localhost:8180", r))
 }
