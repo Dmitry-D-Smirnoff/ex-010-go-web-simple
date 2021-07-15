@@ -18,7 +18,6 @@ type Author struct {
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
 }
-type msg string
 var books []Book
 func getBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
