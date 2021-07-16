@@ -1,4 +1,4 @@
-package main
+package functions
 
 import (
 	"encoding/json"
@@ -9,11 +9,21 @@ import (
 	"strconv"
 )
 
-func getBooks(w http.ResponseWriter, r *http.Request) {
+type Book struct {
+	ID      string `json:"id"`
+	Title   string `json:"title"`
+	Author *Author `json:"author"`
+}
+type Author struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+}
+
+func GetBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(books)
 }
-func getBook(w http.ResponseWriter, r *http.Request) {
+func GetBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for _, item := range books {
@@ -24,7 +34,7 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(&Book{})
 }
-func createBook(w http.ResponseWriter, r *http.Request) {
+func CreateBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var book Book
 	_ = json.NewDecoder(r.Body).Decode(&book)
@@ -32,7 +42,7 @@ func createBook(w http.ResponseWriter, r *http.Request) {
 	books = append(books, book)
 	json.NewEncoder(w).Encode(book)
 }
-func updateBook(w http.ResponseWriter, r *http.Request) {
+func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for index, item := range books {
@@ -48,7 +58,7 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(books)
 }
-func deleteBook(w http.ResponseWriter, r *http.Request) {
+func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for index, item := range books {
@@ -59,7 +69,13 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(books)
 }
-func basicResponse(resp http.ResponseWriter, req *http.Request) {
+func BasicResponse(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("Basic request: " + req.Method + " " + req.URL.String())
 	fmt.Fprint(resp, "Hello from Web Server in Go")
 }
+var books []Book
+func init(){
+	books = append(books, Book{ID: "1", Title: "Война и Мир", Author: &Author{Firstname: "Лев", Lastname: "Толстой"}})
+	books = append(books, Book{ID: "2", Title: "Преступление и наказание", Author: &Author{Firstname: "Фёдор", Lastname: "Достоевский"}})
+}
+
